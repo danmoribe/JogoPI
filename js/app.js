@@ -181,36 +181,67 @@ class Game {
     showPlacementPreview(e) {
         document.querySelectorAll('.cell.preview').forEach(c => c.classList.remove('preview'));
 
-        const coords = this.getBoardCoordsUnderDrag(e);
-        if (coords && this.canPlacePiece(this.draggingPiece, coords.row, coords.col)) {
-            this.draggingPiece.shape.forEach((row, ri) => {
-                row.forEach((cell, ci) => {
-                    if (cell === 1) {
-                        const targetCell = this.boardElement.querySelector(`[data-row="${coords.row + ri}"][data-col="${coords.col + ci}"]`);
-                        if (targetCell) targetCell.classList.add('preview');
-                    }
+        const rect = this.draggingElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        this.draggingElement.style.display = 'none';
+        const elementUnder = document.elementFromPoint(centerX, centerY);
+        this.draggingElement.style.display = 'grid';
+
+        const cell = elementUnder?.closest('.cell');
+
+        if (cell) {
+            const startRow = parseInt(cell.dataset.row);
+            const startCol = parseInt(cell.dataset.col);
+
+            if (this.canPlacePiece(this.draggingPiece, startRow, startCol)) {
+                this.draggingPiece.shape.forEach((row, ri) => {
+                    row.forEach((v, ci) => {
+                        if (v === 1) {
+                            const target = this.boardElement.querySelector(`[data-row="${startRow + ri}"][data-col="${startCol + ci}"]`);
+                            if (target) target.classList.add('preview');
+                        }
+                    });
                 });
-            });
+            }
         }
     }
 
     handleDragEnd(e) {
-        const coords = this.getBoardCoordsUnderDrag(e);
+        // Find center of current drag position
+        const rect = this.draggingElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Hide temporarily to find what's underneath
+        this.draggingElement.style.display = 'none';
+        const elementUnder = document.elementFromPoint(centerX, centerY);
+        this.draggingElement.style.display = 'grid';
+
+        const cell = elementUnder?.closest('.cell');
         let placed = false;
 
-        if (coords && this.canPlacePiece(this.draggingPiece, coords.row, coords.col)) {
-            this.placePiece(this.draggingPiece, coords.row, coords.col);
-            const slotIndex = parseInt(this.sourcePieceElement.parentElement.dataset.slotIndex);
+        if (cell) {
+            const startRow = parseInt(cell.dataset.row);
+            const startCol = parseInt(cell.dataset.col);
 
-            // Replace the used piece with a new one
-            const randomIndex = Math.floor(Math.random() * SHAPES.length);
-            this.availablePieces[slotIndex] = {
-                ...SHAPES[randomIndex],
-                id: Math.random().toString(36).substr(2, 9)
-            };
+            if (this.canPlacePiece(this.draggingPiece, startRow, startCol)) {
+                this.placePiece(this.draggingPiece, startRow, startCol);
 
-            placed = true;
-            this.renderPiecesTray();
+                // Get the slot index from the original source element
+                const slotIndex = parseInt(this.sourcePieceElement.dataset.slotIndex);
+
+                // Replace the used piece with a new one
+                const randomIndex = Math.floor(Math.random() * SHAPES.length);
+                this.availablePieces[slotIndex] = {
+                    ...SHAPES[randomIndex],
+                    id: Math.random().toString(36).substr(2, 9)
+                };
+
+                placed = true;
+                this.renderPiecesTray();
+            }
         }
 
         if (this.draggingElement) {
