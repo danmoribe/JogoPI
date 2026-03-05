@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Block Blaster Web - O Melhor Puzzle Estratégico</title>
+    <meta name="description"
+        content="Jogue Block Blaster online. O famoso puzzle de estratégia onde você limpa linhas e colunas em um tabuleiro 8x8.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Poppins:wght@600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="game-container">
+        <header>
+            <div class="logo">
+                <h1>BLOCK <span>BLASTER</span></h1>
+            </div>
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">PONTOS</span>
+                    <span id="current-score" class="value">0000</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">RECORDE</span>
+                    <span id="high-score" class="value">0000</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="game-board-container" class="board-wrapper">
+                <div id="game-board" class="board">
+                    <!-- Grid cells will be generated here by JS -->
+                </div>
+            </div>
+
+            <div id="pieces-container" class="pieces-tray">
+                <!-- Three random pieces will be generated here -->
+                <div class="piece-slot" id="slot-0"></div>
+                <div class="piece-slot" id="slot-1"></div>
+                <div class="piece-slot" id="slot-2"></div>
+            </div>
+        </main>
+
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>FIM DE JOGO</h2>
+                <p>Sua pontuação final:</p>
+                <div class="final-score" id="final-score">0</div>
+                <button id="restart-btn" class="btn-primary">JOGAR NOVAMENTE</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="reset-game" class="btn-secondary">Reiniciar</button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
